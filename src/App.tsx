@@ -1,16 +1,9 @@
-import './App.css';
-import {Button} from 'antd';
-import {AddBookModal} from "./components/AddBookModal/AddBookModal";
-import {useState} from "react";
+import {MainPage} from './components/MainPage/MainPage';
 
 function App() {
-    const [isOpen, setIsOpen] = useState(false);
     return (
         <div className="App">
-            <Button type={'primary'} onClick={() => setIsOpen(true)}>
-                Add book
-            </Button>
-            <AddBookModal isOpen={isOpen} setIsOpen={setIsOpen} />
+            <MainPage />
         </div>
     );
 }
