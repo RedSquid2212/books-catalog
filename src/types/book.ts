@@ -3,5 +3,11 @@ export interface Book {
     authors: string[],
     year?: number,
     rating?: number,
-    ISBN?: string
+    ISBN?: string,
+    id?: string
+}
+
+export interface GroupedBooks {
+    year: number,
+    books: Book[]
 }

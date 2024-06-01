@@ -1,12 +1,12 @@
 import {Collapse, CollapseProps} from 'antd';
-import {books} from "../../mocks/booksMock";
 import {BookCardList} from '../BookCardList/BookCardList';
+import {Book} from '../../types/book';
 
-export function YearGroup() {
+export function YearGroup({year, books}: {year: number, books: Book[]}) {
     const items: CollapseProps['items'] = [
         {
             key: '1',
-            label: '2021',
+            label: year,
             children: <BookCardList books={books} />
         }
     ];
