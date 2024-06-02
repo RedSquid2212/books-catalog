@@ -4,6 +4,8 @@ import {Book} from '../../types/book';
 import {db} from '../../firebase/firebaseConfig';
 import React from 'react';
 
+import './BookCard.css';
+
 interface BookCardProps {
     book: Book,
     allBooks: Book[],
@@ -45,10 +47,12 @@ export function BookCard({book, allBooks, setAllBooks}: BookCardProps) {
                     {modalContextHolder}
                 </>}
             >
-                <p>Авторы: {book.authors.join(', ')}</p>
-                <p>Год издания: {book.year !== -1 ? book.year : 'неизвестен'}</p>
-                <p>Рейтинг: {book.rating}</p>
-                <p>ISBN: {book.ISBN && book.ISBN.length ? book.ISBN : 'неизвестен'}</p>
+                <div className={'book-info'}>
+                    <p>Авторы: {book.authors.join(', ')}</p>
+                    <p>Год издания: {book.year !== -1 ? book.year : 'неизвестен'}</p>
+                    <p>Рейтинг: {book.rating}</p>
+                    <p>ISBN: {book.ISBN && book.ISBN.length ? book.ISBN : 'неизвестен'}</p>
+                </div>
             </Card>
         </>
     );

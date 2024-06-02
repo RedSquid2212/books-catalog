@@ -6,6 +6,7 @@ import {Book} from '../../types/book';
 import dayjs from 'dayjs';
 import {DeleteOutlined} from '@ant-design/icons';
 import {uid} from '../../utils/uidGenerator';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 interface AddBookModalProps {
     isOpen: boolean,
@@ -24,6 +25,7 @@ export function AddBookModal({isOpen, setIsOpen, allBooks, setAllBooks}: AddBook
     const [form] = Form.useForm<Book>();
     const [errorMsg, setErrorMsg] = useState('');
     const [validationStatus, setValidationStatus] = useState<ValidationStatus>('success');
+    const {xs} = useBreakpoint();
 
     const validateISBN = (isbn: string) => {
         isbn = isbn.replace(/[- ]/g, '');
@@ -149,6 +151,7 @@ export function AddBookModal({isOpen, setIsOpen, allBooks, setAllBooks}: AddBook
                                 <Form.Item
                                     label={index === 0 ? 'Авторы' : ''}
                                     key={field.key}
+                                    style={{marginLeft: index !== 0 && !xs ? 60 : 0, marginBottom: 0}}
                                 >
                                     <Form.Item
                                         key={field.key}
@@ -185,7 +188,7 @@ export function AddBookModal({isOpen, setIsOpen, allBooks, setAllBooks}: AddBook
                     />
                 </Form.Item>
                 <Form.Item name={'rating'} label={'Рейтинг'}>
-                    <InputNumber controls={false} min={0}/>
+                    <InputNumber controls={false} min={0} max={10}/>
                 </Form.Item>
                 <Form.Item
                     name={'ISBN'}
