@@ -14,7 +14,6 @@ export function BookCardList({books, setAllBooks}: BookCardListProps) {
                 books.map(book => <BookCard
                     book={book}
                     key={book.id}
-                    allBooks={books}
                     setAllBooks={setAllBooks}
                 />)
             }

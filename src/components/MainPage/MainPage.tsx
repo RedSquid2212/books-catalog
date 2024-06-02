@@ -90,7 +90,6 @@ export function MainPage() {
                 <AddBookModal
                     isOpen={isOpen}
                     setIsOpen={setIsOpen}
-                    allBooks={allBooks}
                     setAllBooks={setAllBooks}
                 />
             </div>
@@ -104,7 +103,7 @@ export function MainPage() {
                 <p style={{fontSize: 20}}>Рекомендуемая книга:</p>
                 {
                     recommendedBook ?
-                        <BookCard book={recommendedBook} allBooks={allBooks} setAllBooks={setAllBooks}/> :
+                        <BookCard book={recommendedBook} setAllBooks={setAllBooks}/> :
                         <p>К сожалению, пока не можем предложить ни одной</p>
                 }
                 {
@@ -128,7 +127,6 @@ export function MainPage() {
                 <AddBookModal
                     isOpen={isOpen}
                     setIsOpen={setIsOpen}
-                    allBooks={allBooks}
                     setAllBooks={setAllBooks}
                 />
             </div>

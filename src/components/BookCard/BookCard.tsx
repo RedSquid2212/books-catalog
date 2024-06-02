@@ -8,11 +8,10 @@ import './BookCard.css';
 
 interface BookCardProps {
     book: Book,
-    allBooks: Book[],
     setAllBooks: React.Dispatch<React.SetStateAction<Book[]>>
 }
 
-export function BookCard({book, allBooks, setAllBooks}: BookCardProps) {
+export function BookCard({book, setAllBooks}: BookCardProps) {
     const [modal, modalContextHolder] = Modal.useModal();
     const handleDelete = async () => {
         await modal.confirm({

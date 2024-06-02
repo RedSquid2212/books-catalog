@@ -11,13 +11,12 @@ import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 interface AddBookModalProps {
     isOpen: boolean,
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    allBooks: Book[],
     setAllBooks: React.Dispatch<React.SetStateAction<Book[]>>
 }
 
 type ValidationStatus = 'success' | 'error';
 
-export function AddBookModal({isOpen, setIsOpen, allBooks, setAllBooks}: AddBookModalProps) {
+export function AddBookModal({isOpen, setIsOpen, setAllBooks}: AddBookModalProps) {
     const titleError = 'Введите название книги';
     const authorsError = 'Добавьте хотя бы одного автора';
     const isbnError = 'Введен невалидный ISBN';
