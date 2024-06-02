@@ -23,7 +23,7 @@ export function MainPage() {
 
     const groupByYear = () => {
         const groupedBooks: GroupedBooks[] = [];
-        allBooks.map(book => {
+        allBooks.forEach(book => {
             const curGroup = groupedBooks
                 .find(item => item.year === book.year);
             if (curGroup) {

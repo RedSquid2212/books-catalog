@@ -19,22 +19,58 @@ type ValidationStatus = 'success' | 'error';
 export function AddBookModal({isOpen, setIsOpen, allBooks, setAllBooks}: AddBookModalProps) {
     const titleError = 'Введите название книги';
     const authorsError = 'Добавьте хотя бы одного автора';
+    const isbnError = 'Введен невалидный ISBN';
 
     const [form] = Form.useForm<Book>();
     const [errorMsg, setErrorMsg] = useState('');
     const [validationStatus, setValidationStatus] = useState<ValidationStatus>('success');
 
-    const handleValidation = (title: string, authors: string[]) => {
+    const validateISBN = (isbn: string) => {
+        isbn = isbn.replace(/[- ]/g, '');
+
+        if (isbn.length !== 10 && isbn.length !== 13) {
+            return false;
+        }
+
+        if (isbn.length === 10) {
+            let sum = 0;
+            for (let i = 0; i < 9; i++) {
+                sum += parseInt(isbn[i]) * (10 - i);
+            }
+            const checkDigit = isbn[9] === 'X' ? 10 : parseInt(isbn[9]);
+            return (sum % 11) === checkDigit;
+        }
+
+        if (isbn.length === 13) {
+            let sum = 0;
+            for (let i = 0; i < 12; i++) {
+                sum += (i % 2 === 0 ? 1 : 3) * parseInt(isbn[i]);
+            }
+            return (10 - (sum % 10)) % 10 === parseInt(isbn[12]);
+        }
+
+        return false;
+    };
+
+    const handleValidation = (title: string, authors: string[], ISBN?: string) => {
         if (!title) {
             setErrorMsg(titleError);
             setValidationStatus('error');
             return false;
         }
+
         if (!authors || !authors.some(author => author)) {
             setErrorMsg(authorsError);
             setValidationStatus('error');
             return false;
         }
+
+        if (ISBN && !validateISBN(ISBN)) {
+            setErrorMsg(isbnError);
+            setValidationStatus('error');
+            return false;
+        }
+
         return true;
     };
 
@@ -42,7 +78,7 @@ export function AddBookModal({isOpen, setIsOpen, allBooks, setAllBooks}: AddBook
         const {title, authors, rating, ISBN} = form.getFieldsValue();
         const year = form.getFieldValue('year');
 
-        if (!handleValidation(title, authors)) {
+        if (!handleValidation(title, authors, ISBN)) {
             return;
         }
 
@@ -149,10 +185,15 @@ export function AddBookModal({isOpen, setIsOpen, allBooks, setAllBooks}: AddBook
                     />
                 </Form.Item>
                 <Form.Item name={'rating'} label={'Рейтинг'}>
-                    <InputNumber />
+                    <InputNumber controls={false} min={0}/>
                 </Form.Item>
-                <Form.Item name={'ISBN'} label={'ISBN'}>
-                    <Input type={'text'}/>
+                <Form.Item
+                    name={'ISBN'}
+                    label={'ISBN'}
+                    help={errorMsg === isbnError ? errorMsg : ''}
+                    validateStatus={errorMsg === isbnError ? validationStatus : 'success'}
+                >
+                    <Input type={'text'} onChange={handleFieldChange}/>
                 </Form.Item>
             </Form>
         </Modal>
