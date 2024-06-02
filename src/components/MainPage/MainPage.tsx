@@ -9,6 +9,7 @@ import {BookCard} from '../BookCard/BookCard';
 import {db} from '../../firebase/firebaseConfig';
 import {Book, GroupedBooks} from '../../types/book';
 import dayjs from 'dayjs';
+import {NoBooks} from "../NoBooks/NoBooks";
 
 export function MainPage() {
     const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +39,9 @@ export function MainPage() {
         const curYear = dayjs().year();
         const oldBooks = allBooks
             .filter(book => book.year !== -1 && curYear - book.year! >= 3);
+        if (!oldBooks.length) {
+            return;
+        }
         const maxRating = Math.max(...oldBooks.map(book => book.rating!));
         const bestBooks = oldBooks.filter(book => book.rating === maxRating);
         const randomIndex = Math.floor(Math.random() * bestBooks.length);
@@ -59,36 +63,75 @@ export function MainPage() {
     useEffect(() => {
         setIsLoading(true);
         fetchBooks();
-    }, [db]);
+    }, []);
 
     const groups = groupByYear();
     const recommendedBook = pickRecommendedBook();
 
-    if (isLoading || !groups || !recommendedBook) {
+    if (isLoading || !groups) {
         return (
-            <Spin />
+            <Spin size={'large'} fullscreen/>
+        );
+    }
+
+    if (!groups.length) {
+        return (
+            <div className={'main-page-empty'}>
+                <h1 className={'main-header'}>Каталог книг</h1>
+                <NoBooks />
+                <Button
+                    type={'primary'}
+                    onClick={() => setIsOpen(true)}
+                    className={'add-button'}
+                    size={'large'}
+                >
+                    Добавить книгу
+                </Button>
+                <AddBookModal
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    allBooks={allBooks}
+                    setAllBooks={setAllBooks}
+                />
+            </div>
         );
     }
 
     return (
         <div className={'main-page'}>
             <h1 className={'main-header'}>Каталог книг</h1>
-            <p>Рекомендуемая книга:</p>
-            <BookCard book={recommendedBook} />
-            {
-                groups.map(group => (
-                    <YearGroup year={group.year} books={group.books} key={group.year} />
-                ))
-            }
-            <Button
-                type={'primary'}
-                onClick={() => setIsOpen(true)}
-                className={'add-button'}
-                size={'large'}
-            >
-                Добавить книгу
-            </Button>
-            <AddBookModal isOpen={isOpen} setIsOpen={setIsOpen} />
+            <div className={'main-page-content'}>
+                <p style={{fontSize: 20}}>Рекомендуемая книга:</p>
+                {
+                    recommendedBook ?
+                        <BookCard book={recommendedBook} allBooks={allBooks} setAllBooks={setAllBooks}/> :
+                        <p>К сожалению, пока не можем предложить ни одной</p>
+                }
+                {
+                    groups.map(group => (
+                        <YearGroup
+                            year={group.year}
+                            books={group.books}
+                            setAllBooks={setAllBooks}
+                            key={group.year}
+                        />
+                    ))
+                }
+                <Button
+                    type={'primary'}
+                    onClick={() => setIsOpen(true)}
+                    className={'add-button'}
+                    size={'large'}
+                >
+                    Добавить книгу
+                </Button>
+                <AddBookModal
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    allBooks={allBooks}
+                    setAllBooks={setAllBooks}
+                />
+            </div>
         </div>
     );
 }

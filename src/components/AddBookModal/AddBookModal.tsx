@@ -1,19 +1,22 @@
 import {Button, DatePicker, Form, Input, InputNumber, Modal} from 'antd';
 import React, {useState} from 'react';
-import { collection, addDoc } from 'firebase/firestore';
+import { setDoc, doc } from 'firebase/firestore';
 import {db} from '../../firebase/firebaseConfig';
 import {Book} from '../../types/book';
 import dayjs from 'dayjs';
 import {DeleteOutlined} from '@ant-design/icons';
+import {uid} from '../../utils/uidGenerator';
 
 interface AddBookModalProps {
     isOpen: boolean,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    allBooks: Book[],
+    setAllBooks: React.Dispatch<React.SetStateAction<Book[]>>
 }
 
 type ValidationStatus = 'success' | 'error';
 
-export function AddBookModal({isOpen, setIsOpen}: AddBookModalProps) {
+export function AddBookModal({isOpen, setIsOpen, allBooks, setAllBooks}: AddBookModalProps) {
     const titleError = 'Введите название книги';
     const authorsError = 'Добавьте хотя бы одного автора';
 
@@ -44,6 +47,7 @@ export function AddBookModal({isOpen, setIsOpen}: AddBookModalProps) {
         }
 
         const newBook: Book = {
+            id: uid(),
             title,
             authors: authors.filter(author => author),
             year: year ? dayjs(year).year() : -1,
@@ -52,12 +56,12 @@ export function AddBookModal({isOpen, setIsOpen}: AddBookModalProps) {
         };
 
         try {
-            await addDoc(collection(db, 'books'), newBook);
+            await setDoc(doc(db, 'books', newBook.id), newBook);
+            setAllBooks((prevState) => [...prevState, newBook]);
+            setIsOpen(false);
         } catch (err) {
             console.log(err);
         }
-
-        setIsOpen(false);
     };
 
     const handleCancel = () => {
